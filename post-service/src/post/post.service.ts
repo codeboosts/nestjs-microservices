@@ -15,9 +15,7 @@ export class PostService {
     input: CreatePostInputDto,
     user: CurrentUserType,
   ): Promise<Post> {
-    const post = this.postRepository.create({ ...input, userID: user.ID });
-
-    return this.postRepository.save(post);
+    return this.postRepository.save({ ...input, userID: user.ID });
   }
 
   async updatePost(

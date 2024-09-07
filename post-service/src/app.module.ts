@@ -10,6 +10,7 @@ import {
 } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PostModule } from './post/post.module';
       playground: true,
     }),
     PostModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

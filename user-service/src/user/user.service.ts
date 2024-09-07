@@ -81,6 +81,13 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async markEmailVerified(ID: string): Promise<User> {
+    const user = await this.findOne(ID);
+    user.isEmailVerified = true;
+
+    return this.userRepository.save(user);
+  }
+
   async delete(ID: string): Promise<boolean> {
     const result = await this.userRepository.delete(ID);
     return result.affected > 0;

@@ -3,44 +3,18 @@ services:
   user-service:
     build: ./user-service
     ports:
-      - '3001:3000'
-    environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=rootpassword
-      - DATABASE_NAME=user_db
-    depends_on:
-      - mysql
+      - '7071:7071'
+    env_file:
+      - ./user-service/.env
 
   post-service:
     build: ./post-service
     ports:
-      - '3002:3000'
-    environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=rootpassword
-      - DATABASE_NAME=post_db
-    depends_on:
-      - mysql
+      - '7072:7072'
+    env_file:
+      - ./post-service/.env
 
   api-gateway:
     build: ./api-gateway
     ports:
-      - '3000:3000'
-
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: user_db
-    ports:
-      - '3306:3306'
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-volumes:
-  mysql_data:
+      - '7070:7070'

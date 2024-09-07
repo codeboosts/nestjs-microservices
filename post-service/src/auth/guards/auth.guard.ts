@@ -1,9 +1,24 @@
-import { Injectable, ExecutionContext } from '@nestjs/common';
-import { AuthGuard as Pguard } from '@nestjs/passport';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { AuthGuard as PGuard } from '@nestjs/passport';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
-export class AuthGuard extends Pguard('jwt') {
-  canActivate(context: ExecutionContext) {
-    return super.canActivate(context);
+export class AuthGuard extends PGuard('jwt') {
+  getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    const request = ctx.getContext().req;
+    return request;
+  }
+
+  handleRequest(err: any, user: any) {
+    if (err || !user) {
+      throw err || new UnauthorizedException();
+    }
+
+    return user;
   }
 }

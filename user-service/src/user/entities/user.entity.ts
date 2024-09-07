@@ -6,7 +6,7 @@ import { onHashPassword } from 'src/utils/bcrypt';
 @ObjectType()
 export class User {
   @Field()
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   ID: string;
 
   @Field()

@@ -42,4 +42,9 @@ export class UserResolver {
   async deleteUser(@Args('ID') ID: string): Promise<boolean> {
     return this.userService.delete(ID);
   }
+
+  @Query(() => User)
+  async getUserByUsername(@Args('username') username: string) {
+    return this.userService.findOneByUsername(username);
+  }
 }

@@ -33,15 +33,7 @@ export class AuthService {
     const user = await this.userService.create(input);
 
     const token = this.tokenService.signToken(user.ID);
-    const verificationToken = this.verificationTokenRepository.create({
-      token,
-      userID: user.ID,
-    });
-    console.log(input);
-    console.log(user);
-    console.log(token);
-    console.log(verificationToken);
-    await this.verificationTokenRepository.save(verificationToken);
+    await this.verificationTokenRepository.save({ token, userID: user.ID });
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -72,15 +64,9 @@ export class AuthService {
       throw new BadRequestException('Invalid token');
     }
 
-    const user = await this.userService.findOne(verificationToken.userID);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    await this.userService.markEmailVerified(verificationToken.userID);
 
-    user.isEmailVerified = true;
-    await this.userService.update(user.ID, user);
-
-    await this.verificationTokenRepository.delete(verificationToken.token);
+    await this.verificationTokenRepository.delete(verificationToken.ID);
   }
 
   async requestPasswordReset(email: string): Promise<void> {

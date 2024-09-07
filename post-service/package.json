@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "@apollo/gateway": "2.2.3",
     "@apollo/server": "^4.11.0",
     "@apollo/subgraph": "2.2.3",
@@ -35,7 +36,9 @@
     "apollo-server-express": "^3.13.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cross-fetch": "^4.0.0",
     "graphql": "^16.9.0",
+    "graphql-request": "^7.1.0",
     "graphql-tools": "^9.0.1",
     "mysql2": "^3.11.0",
     "passport": "^0.7.0",

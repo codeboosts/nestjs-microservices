@@ -1,5 +1,6 @@
 type AuthTokenPayload = {
   username: string;
+  email: string;
   role: string;
 };
 

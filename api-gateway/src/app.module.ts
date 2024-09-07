@@ -4,30 +4,45 @@ import { AppService } from './app.service';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { IntrospectAndCompose } from '@apollo/gateway';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { RemoteGraphQLDataSource } from '@apollo/gateway';
 
 @Module({
   imports: [
-    GraphQLModule.forRootAsync<ApolloGatewayDriverConfig>({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        driver: ApolloGatewayDriver,
-        gateway: {
-          supergraphSdl: new IntrospectAndCompose({
-            subgraphs: [
-              {
-                name: 'users',
-                url: configService.get<string>('USERS_SERVICE_URL'),
-              },
-              {
-                name: 'posts',
-                url: configService.get<string>('POSTS_SERVICE_URL'),
-              },
-            ],
-          }),
+    ConfigModule.forRoot(),
+    GraphQLModule.forRoot<ApolloGatewayDriverConfig>({
+      driver: ApolloGatewayDriver,
+      gateway: {
+        supergraphSdl: new IntrospectAndCompose({
+          subgraphs: [
+            {
+              name: 'users',
+              url: 'http://localhost:7071/graphql',
+            },
+            {
+              name: 'posts',
+              url: 'http://localhost:7072/graphql',
+            },
+          ],
+        }),
+        buildService({ url }) {
+          return new RemoteGraphQLDataSource({
+            url,
+            willSendRequest({ request, context }) {
+              // Ensure context and req exist before setting headers
+              if (context?.req?.headers?.authorization) {
+                request.http.headers.set(
+                  'Authorization',
+                  context.req.headers.authorization,
+                );
+              }
+            },
+          });
         },
-      }),
+      },
+      server: {
+        context: ({ req }) => ({ req }),
+      },
     }),
   ],
   controllers: [AppController],
